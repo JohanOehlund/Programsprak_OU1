@@ -19,3 +19,16 @@ reverseList' l1 (h:t) = reverseList' (h:l1) t
 
 -- Vänd på en lista
 reverseList l = reverseList' [] l
+
+
+lucky :: (Integral a) => a -> String  
+lucky 7 = "LUCKY NUMBER SEVEN!"  
+lucky x = "Sorry, you're out of luck, pal!"
+
+charName :: String -> String  
+charName "a" = "Albert"  
+charName "b" = "Broseph"  
+charName "c" = "Cecil"
+
+addVectors :: (Num a) => (a, a) -> (a, a) -> (a, a)  
+addVectors (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
