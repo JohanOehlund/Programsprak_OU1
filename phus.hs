@@ -25,9 +25,9 @@ elem' ((reg0,_,(_,_),(_,_)):xs) reg1
     | reg0 == reg1 = True
     | otherwise = (elem') xs reg1   
 
-phus :: [(String, Bool, (Integer, Integer))] -> [(String, Bool, (Integer, Integer))]
+phus :: [(String, Bool, (Integer, Integer))] -> String
 phus [] = []
---phus l =  phus_helper l []
+phus l = (l `mapTest` (phus_helper l [])) `getMaxTimeParked` ("ABC123",(0,0))
 
 
 
@@ -60,6 +60,10 @@ mapTest :: [(String, Bool, (Integer, Integer))] -> [(String, Bool, (Integer, Int
     [(String, Bool, (Integer, Integer),(Integer, Integer))]
 mapTest _ [] = []
 mapTest dayX ((reg1,isParked1,(cHour,cMinute),(hour1,minute1)):xs) = test dayX (reg1,isParked1,(cHour,cMinute),(hour1,minute1)) : mapTest dayX xs
+
+convertToOutput :: [(String, Bool, (Integer, Integer),(Integer, Integer))] -> String -> (String, [(String, (Integer, Integer))])
+--convertToOutput [] reg = []
+convertToOutput ((reg1,isParked1,(cHour,cMinute),(hour1,minute1)):xs) reg = (reg,[(reg1,(cHour,cMinute))])
 
 
 getMaxTimeParked :: [(String, Bool, (Integer, Integer),(Integer, Integer))] -> (String,(Integer,Integer)) -> String
