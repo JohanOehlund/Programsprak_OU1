@@ -52,11 +52,27 @@ test ((reg0,isParked0,(hour0,minute0)):xs) (reg1,isParked1,(cHour,cMinute),(hour
     |otherwise = test xs (reg1,isParked1,(cHour,cMinute),(hour1,minute1))
 
 diffTime :: (Integer,Integer) -> (Integer,Integer) -> (Integer,Integer)-> (Integer,Integer)
-diffTime (currHour,currMinute) (checkInHour,checkInMinute) (checkOutHour,checkOutMinute) 
-    | checkInMinute == checkOutMinute = (currHour+((abs)checkOutHour-checkInHour)-1,(currMinute+((abs)(((checkOutHour*60)+checkOutMinute)-((checkInHour*60)+checkInMinute)) `mod` 60)))
-    | checkInMinute+checkOutMinute >=60 = (currHour+((abs)(((checkOutHour*60)+checkOutMinute)-((checkInHour*60)+checkInMinute)) `mod` 24),(currMinute+((abs)(((checkOutHour*60)+checkOutMinute)-((checkInHour*60)+checkInMinute)) `mod` 60)))
-    | otherwise= (currHour+(((abs)checkOutHour-checkInHour)-1),(currMinute+((abs)(((checkOutHour*60)+checkOutMinute)-((checkInHour*60)+checkInMinute)) `mod` 60)))
+diffTime (currHour,currMinute) (checkInHour,checkInMinute) (checkOutHour,checkOutMinute) =
+     (((((abs)(((checkOutHour*60)+checkOutMinute)-((checkInHour*60)+checkInMinute))+currMinute) `div` 60)+currHour),((abs)(checkOutHour*60+checkOutMinute)-(checkInHour*60+checkInMinute)+currMinute) `mod` 60)
+
+
+mapTest :: [(String, Bool, (Integer, Integer))] -> [(String, Bool, (Integer, Integer),(Integer, Integer))] -> 
+    [(String, Bool, (Integer, Integer),(Integer, Integer))]
+mapTest _ [] = []
+mapTest dayX ((reg1,isParked1,(cHour,cMinute),(hour1,minute1)):xs) = test dayX (reg1,isParked1,(cHour,cMinute),(hour1,minute1)) : mapTest dayX xs
+
+
+getMaxTimeParked :: [(String, Bool, (Integer, Integer),(Integer, Integer))] -> (String,(Integer,Integer)) -> String
+getMaxTimeParked [] (reg,(hour,minute)) = reg 
+getMaxTimeParked ((reg1,isParked1,(cHour,cMinute),(hour1,minute1)):xs) (reg,(hour,minute)) = if ((cHour*60)+cMinute) > ((hour*60)+minute) then
+                        getMaxTimeParked xs (reg1,(cHour,cMinute)) 
+                     else 
+                        getMaxTimeParked xs (reg,(hour,minute))
+
 {-
+
+| checkInMinute+checkOutMinute >=60 = (((((abs)((checkOutHour*60+checkOutMinute)-(checkInHour*60+checkInMinute))+currHour*60) `div` 60)), (((abs)((checkOutHour*60+checkOutMinute)-(checkInHour*60+checkInMinute))+currMinute)`mod`60))
+    | 
 
 diffTime :: (Integer,Integer) -> (Integer,Integer) -> (Integer,Integer)-> (Integer,Integer)
 diffTime (currHour,currMinute) (checkInHour,checkInMinute) (checkOutHour,checkOutMinute) 
