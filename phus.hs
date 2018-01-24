@@ -8,10 +8,8 @@ Function: phus
 Comment: Calculates total time parked for each car in the carpark.
 -}
 phus :: CarparkInfoList ->  CarparkOutputTuple
-phus l = convertToOutput calcDayX maxParked []
-       where calcDayX = (map') l 
-             maxParked = getMaxTimeParked calcDayX ("ABC123",(0,0))
-
+phus l = (fst (head calcDayX),calcDayX)
+        where calcDayX = (quicksort) $(map') l
 {-
 Function: notElem'
 Comment: Checks if a car is not an element of a list.
@@ -58,12 +56,19 @@ convertToOutput [] reg output = (reg,output)
 convertToOutput ((reg1,(totHour,totMinute)):xs1) reg output =  convertToOutput xs1 reg ((reg1,(totHour,totMinute)) : output) 
 
 {-
-Function: getMaxTimeParked
-Comment: Returns the car with the maximum time parked in the carpark.
+Function: quicksort
+Comment: Sorts the list so that the car with longest parking time is first.
 -}
-getMaxTimeParked :: [(String,TimeParked)] -> (String,TimeParked) -> String
-getMaxTimeParked [] (reg,(hour,minute)) = reg 
-getMaxTimeParked ((reg1,(totHour,totMinute)):xs) (reg,(hour,minute)) = if ((totHour*60)+totMinute) > ((hour*60)+minute) then
-                        getMaxTimeParked xs (reg1,(totHour,totMinute)) 
-                     else 
-                        getMaxTimeParked xs (reg,(hour,minute))
+quicksort :: [(String,TimeParked)] -> [(String,TimeParked)]
+quicksort [] = []  
+quicksort (x:xs) =
+  (quicksort [a|a<-xs, parkedLonger a x]) ++ [x] ++ (quicksort [a|a<-xs, parkedLonger x a])
+
+{-
+Function: parkedLonger
+Comment: Checks if a car has parked longer than another car.
+-}
+parkedLonger :: (String,TimeParked) -> (String,TimeParked) -> Bool
+parkedLonger (reg0,(totHour0,totMinute0)) (reg1,(totHour1,totMinute1)) 
+            | compare ((totHour0*60)+totMinute0) ((totHour1*60)+totMinute1) == GT = True
+            | otherwise = False
