@@ -69,6 +69,6 @@ Function: parkedLonger
 Comment: Checks if a car has parked longer than another car.
 -}
 parkedLonger :: (String,TimeParked) -> (String,TimeParked) -> Bool
-parkedLonger (reg0,(totHour0,totMinute0)) (reg1,(totHour1,totMinute1)) 
-            | compare ((totHour0*60)+totMinute0) ((totHour1*60)+totMinute1) == GT = True
+parkedLonger (_,(totHour0,totMinute0)) (_,(totHour1,totMinute1)) 
+            | (totHour0,totMinute0) > (totHour1,totMinute1) = True
             | otherwise = False
