@@ -39,12 +39,12 @@ to each element of the list from phus_helper.
 -}
 map' :: CarparkInfoList -> [(String,TimeParked,TimeParked)] ->
     [(String,TimeParked)]
-map' [] output = ((convertAndQuicksort) output)
-map' ((reg,isParked,(hour,minute)):xs) output 
-    | (notElem') output reg == True = map' xs((reg,(hour,minute),(0,0)):output)
-    | isParked == False = map' xs(changeTimeParked(reg,(hour,minute))[]output)
-    | isParked == True =  map' xs(changeCheckInTime(reg,(hour,minute))[]output)
-    | otherwise = map' xs output
+map' [] calcList = ((convertAndQuicksort) calcList)
+map' ((reg,isParked,(hour,minute)):xs) calcList 
+ | (notElem') calcList reg == True = map' xs((reg,(hour,minute),(0,0)):calcList)
+ | isParked == False = map' xs(changeTimeParked(reg,(hour,minute))[]calcList)
+ | isParked == True =  map' xs(changeCheckInTime(reg,(hour,minute))[]calcList)
+ | otherwise = error "Invalid parking state of a car in function map'."
 
 {-
 Function: diffTime
@@ -65,6 +65,8 @@ to calculate the total parking time).
 -}
 changeCheckInTime :: (String,TimeParked) -> [(String,TimeParked,TimeParked)] ->
      [(String,TimeParked,TimeParked)] -> [(String,TimeParked,TimeParked)]
+changeCheckInTime _ _ []= 
+    error "Invalid input to change in function changeCheckInTime."
 changeCheckInTime (reg1,(totHour1,totMinute1)) l 
                   ((reg,(hour,minute),(totHour,totMinute)):xs)
     | reg == reg1 =l++ ((reg,(totHour1,totMinute1),(totHour,totMinute)):xs)
@@ -77,9 +79,11 @@ Comment: Changes the total parking time for a car in a list
 -}
 changeTimeParked :: (String,TimeParked) -> [(String,TimeParked,TimeParked)] ->
      [(String,TimeParked,TimeParked)] -> [(String,TimeParked,TimeParked)]
+changeTimeParked _ _ []= 
+    error "Invalid input to change in function changeTimeParked."
 changeTimeParked (reg1,(totHour1,totMinute1)) l 
                 ((reg,(hour,minute),(totHour,totMinute)):xs)
-    | reg == reg1 = l++ ((reg,(totHour1,totMinute1),
+ | reg == reg1 = l++ ((reg,(totHour1,totMinute1),
         (diffTime (totHour,totMinute) (hour,minute) (totHour1,totMinute1))):xs)
-    | otherwise = changeTimeParked (reg1,(totHour1,totMinute1)) 
-                    ((reg,(hour,minute),(totHour,totMinute)):l) xs
+ | otherwise = changeTimeParked (reg1,(totHour1,totMinute1)) 
+        ((reg,(hour,minute),(totHour,totMinute)):l) xs
