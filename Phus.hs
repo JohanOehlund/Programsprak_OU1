@@ -33,16 +33,6 @@ convertAndQuicksort ((reg,(hour,minute),(totHour,totMinute)):xs) =
     (convertAndQuicksort [(a,b,time)|(a,b,time)<-xs, time<=(totHour,totMinute)])
 
 {-
-Function: convertToOutput
-Comment: Converts the calculated list of total parking times to the expected 
-output of phus.
--}
-convertToOutput :: [(String,TimeParked,TimeParked)] -> [(String,TimeParked)]
-convertToOutput [] = []
-convertToOutput ((reg,(hour,minute),(totHour,totMinute)):xs) = 
-    (reg,(totHour,totMinute)):convertToOutput xs
-
-{-
 Function: map'
 Comment: converted map function inorder to apply every calcTimeDiffs function 
 to each element of the list from phus_helper.
@@ -51,7 +41,7 @@ map' :: CarparkInfoList -> [(String,TimeParked,TimeParked)] ->
     [(String,TimeParked)]
 map' [] output = ((convertAndQuicksort) output)
 map' ((reg,isParked,(hour,minute)):xs) output 
-    | (notElem') output reg == True = map' xs ((reg,(hour,minute),(0,0)):output)
+    | (notElem') output reg == True = map' xs((reg,(hour,minute),(0,0)):output)
     | isParked == False = map' xs(changeTimeParked(reg,(hour,minute))[]output)
     | isParked == True =  map' xs(changeCheckInTime(reg,(hour,minute))[]output)
     | otherwise = map' xs output
