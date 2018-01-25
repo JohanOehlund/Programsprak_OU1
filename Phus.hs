@@ -25,11 +25,12 @@ notElem' ((reg0,(_,_),(_,_)):xs) reg1
 Function: quicksort
 Comment: Sorts the list so that the car with longest parking time is first.
 -}
-quicksort :: [(String,TimeParked)] -> [(String,TimeParked)]
-quicksort [] = []  
-quicksort (x:xs) =
-  (quicksort [a|a<-xs, parkedLonger a x]) ++ [x] 
-    ++ (quicksort [a|a<-xs, parkedLonger x a])
+convertAndQuicksort :: [(String,TimeParked,TimeParked)] -> [(String,TimeParked)]
+convertAndQuicksort [] = []  
+convertAndQuicksort ((reg,(hour,minute),(totHour,totMinute)):xs) =
+    (convertAndQuicksort [(a,b,time)|(a,b,time)<-xs, time>(totHour,totMinute)]) 
+                        ++[(reg,(totHour,totMinute))]++ 
+    (convertAndQuicksort [(a,b,time)|(a,b,time)<-xs, time<=(totHour,totMinute)])
 
 {-
 Function: convertToOutput
@@ -48,7 +49,7 @@ to each element of the list from phus_helper.
 -}
 map' :: CarparkInfoList -> [(String,TimeParked,TimeParked)] ->
     [(String,TimeParked)]
-map' [] output = ((quicksort) $((convertToOutput) output))
+map' [] output = ((convertAndQuicksort) output)
 map' ((reg,isParked,(hour,minute)):xs) output 
     | (notElem') output reg == True = map' xs ((reg,(hour,minute),(0,0)):output)
     | isParked == False = map' xs(changeTimeParked(reg,(hour,minute))[]output)
@@ -68,15 +69,6 @@ diffTime (currHour,currMinute) (checkInHour,checkInMinute)
             (checkInHour*60+checkInMinute)+currMinute) `mod` 60)
 
 {-
-Function: parkedLonger
-Comment: Checks if a car has parked longer than another car.
--}
-parkedLonger :: (String,TimeParked) -> (String,TimeParked) -> Bool
-parkedLonger (_,(totHour0,totMinute0)) (_,(totHour1,totMinute1)) 
-            | (totHour0,totMinute0) > (totHour1,totMinute1) = True
-            | otherwise = False
-
-            {-
 Function: changeCheckInTime
 Comment: Changes the check in time for a car in a list (the list which is used 
 to calculate the total parking time).
