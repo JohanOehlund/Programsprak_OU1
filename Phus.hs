@@ -10,6 +10,10 @@ Comment: Calculates total time parked for each car in the carpark.
 phus :: CarparkInfoList ->  CarparkOutputTuple
 phus l = ((map') l [])
 
+{-
+Function: convertToOuput
+Comment: Converts to the expected output of phus.
+-}
 convertToOuput :: [(String,TimeParked)] -> (String,[(String,TimeParked)])
 convertToOuput (((reg,(hour,minute))):xs) = (reg,((reg,(hour,minute)):xs))
 {-
