@@ -8,8 +8,10 @@ Function: phus
 Comment: Calculates total time parked for each car in the carpark.
 -}
 phus :: CarparkInfoList ->  CarparkOutputTuple
-phus l =(fst(head(calcDayX)),calcDayX)
-        where calcDayX = (map') l []
+phus l = ((map') l [])
+
+convertToOuput :: [(String,TimeParked)] -> (String,[(String,TimeParked)])
+convertToOuput (((reg,(hour,minute))):xs) = (reg,((reg,(hour,minute)):xs))
 {-
 Function: notElem'
 Comment: Checks if a car is not an element of a list.
@@ -38,8 +40,8 @@ Comment: converted map function inorder to apply every calcTimeDiffs function
 to each element of the list from phus_helper.
 -}
 map' :: CarparkInfoList -> [(String,TimeParked,TimeParked)] ->
-    [(String,TimeParked)]
-map' [] calcList = ((convertAndQuicksort) calcList)
+    (String,[(String,TimeParked)])
+map' [] calcList = ((convertToOuput) $((convertAndQuicksort) calcList))
 map' ((reg,isParked,(hour,minute)):xs) calcList 
  | (notElem') calcList reg == True = map' xs((reg,(hour,minute),(0,0)):calcList)
  | isParked == False = map' xs(changeTimeParked(reg,(hour,minute))[]calcList)
