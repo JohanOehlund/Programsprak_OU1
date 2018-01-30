@@ -1,3 +1,12 @@
+-----------------------------------------------------------------------------
+-- | Program that handels a carparks daily activites.
+-- 
+-- Copyright  : (c) Johan Öhlund, 2018
+-- Maintainer : c15jod@cs.umu.se
+--
+-- Project for the course Programspråk VT18, Umeå universitet.
+--------------------------------------------------------------------------------
+
 import Register
 type CarparkInfoList = [(String, Bool, (Integer, Integer))]
 type CarparkOutputTuple = (String, [(String, (Integer, Integer))])
@@ -16,6 +25,7 @@ Comment: Converts to the expected output of phus.
 -}
 convertToOuput :: [(String,TimeParked)] -> (String,[(String,TimeParked)])
 convertToOuput (((reg,(hour,minute))):xs) = (reg,((reg,(hour,minute)):xs))
+
 {-
 Function: notElem'
 Comment: Checks if a car is not an element of a list.
@@ -40,8 +50,8 @@ convertAndQuicksort ((reg,(hour,minute),(totHour,totMinute)):xs) =
 
 {-
 Function: map'
-Comment: converted map function inorder to apply every calcTimeDiffs function 
-to each element of the list from phus_helper.
+Comment: A converted map function used to apply every changeCheckInTime 
+and changeTimeParked to each element of the list from phus_helper.
 -}
 map' :: CarparkInfoList -> [(String,TimeParked,TimeParked)] ->
     (String,[(String,TimeParked)])
